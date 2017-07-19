@@ -1,4 +1,4 @@
-package entry
+package classpath
 
 import "errors"
 import "strings"

@@ -2,7 +2,11 @@ package main
 
 import "flag"
 import "fmt"
-import "os"
+import (
+	"classpath"
+	"os"
+	"strings"
+)
 
 type Cmd struct {
 	helpFlag    bool
@@ -17,8 +21,8 @@ func printUsage() {
 	fmt.Printf("Usage: %s [-options] class [args...]\n", os.Args[0])
 }
 
-func parseCmd() Cmd {
-	cmd := Cmd{}
+func parseCmd() *Cmd {
+	cmd := &Cmd{}
 
 	flag.BoolVar(&cmd.helpFlag, "help", false, "print help message")
 	flag.BoolVar(&cmd.helpFlag, "?", false, "print help message")
@@ -26,6 +30,7 @@ func parseCmd() Cmd {
 	flag.StringVar(&cmd.cpOption, "classpath", "", "classpath")
 	flag.StringVar(&cmd.cpOption, "cp", "", "classpath")
 	flag.StringVar(&cmd.XjreOption, "Xjre", "", "path to jre")
+	flag.StringVar(&cmd.class, "class", "", "path of class")
 
 	flag.Parse()
 	args := flag.Args()
@@ -36,6 +41,14 @@ func parseCmd() Cmd {
 	return cmd
 }
 
-func startJVM(cmd Cmd) {
-	fmt.Printf("classpath:%s class:%s args:%v\n", cmd.cpOption, cmd.class, cmd.args)
+func startJVM(cmd *Cmd) {
+	fmt.Printf("classpath:%v class:%v args:%v\n", cmd.cpOption, cmd.class, cmd.args)
+	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
+	className := strings.Replace(cmd.class, ".", "/", -1)
+	classData, _, err := cp.ReadClass(className)
+	if err != nil {
+		fmt.Printf("Cound not find or load main class %s \n", cmd.class)
+		return
+	}
+	fmt.Printf("class data:%v\n", classData)
 }

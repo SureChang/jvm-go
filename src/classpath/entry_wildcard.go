@@ -1,4 +1,4 @@
-package entry
+package classpath
 
 import "os"
 import "path/filepath"
