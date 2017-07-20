@@ -16,19 +16,19 @@ func Parse(jreOption, cpOption string) *Classpath {
 	return cp
 }
 
-func (self *Classpath) parseUserClasspath(cpOption string) {
-	if cpOption == "" {
-		cpOption = "."
-	}
-	self.userClasspath = newEntry(cpOption)
-}
-
 func (self *Classpath) parseBootAndExtClasspath(jreOption string) {
 	jreDir := getJreDir(jreOption)
 	jreLibPath := filepath.Join(jreDir, "lib", "*")
 	self.bootClasspath = newWildcardEntry(jreLibPath)
 	jreExtPath := filepath.Join(jreDir, "lib", "ext", "*")
 	self.extClasspath = newWildcardEntry(jreExtPath)
+}
+
+func (self *Classpath) parseUserClasspath(cpOption string) {
+	if cpOption == "" {
+		cpOption = "."
+	}
+	self.userClasspath = newEntry(cpOption)
 }
 
 func getJreDir(jreOption string) string {
