@@ -2,7 +2,6 @@ package classReader
 
 import (
 	"encoding/binary"
-	"go/token"
 )
 
 type ClassReader struct {
