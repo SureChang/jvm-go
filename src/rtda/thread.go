@@ -11,6 +11,10 @@ func NewThread() *Thread {
 	}
 }
 
+func (self *Thread) PC() int {
+	return self.pc
+}
+
 func (self *Thread) PushFrame(frame *Frame) {
 	self.stack.push(frame)
 }
