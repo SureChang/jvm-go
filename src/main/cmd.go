@@ -7,6 +7,7 @@ import (
 	"classpath"
 	"os"
 	"strings"
+	"interpreter"
 )
 
 type Cmd struct {
@@ -42,12 +43,15 @@ func parseCmd() *Cmd {
 }
 
 func startJVM(cmd *Cmd) {
-	// fmt.Printf("classpath:%v class:%v args:%v\n", cmd.cpOption, cmd.class, cmd.args)
 	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
 	className := strings.Replace(cmd.class, ".", "/", -1)
 	cf := loadClass(className, cp)
-	fmt.Println(cmd.class)
-	printClassInfo(cf)
+	mainMethod := getMainMethod(cf)
+	if mainMethod != nil {
+		interpreter.Interpret(mainMethod)
+	} else {
+		fmt.Printf("Main method not found in class %s\n", cmd.class)
+	}
 }
 
 func loadClass(className string, cp *classpath.Classpath) *classReader.ClassFile {
@@ -60,6 +64,15 @@ func loadClass(className string, cp *classpath.Classpath) *classReader.ClassFile
 		panic(err)
 	}
 	return cf
+}
+
+func getMainMethod(cf *classReader.ClassFile) *classReader.MemberInfo {
+	for _, m := range cf.Methods() {
+		if m.Name() == "main" && m.Descriptor() == "([Ljava/lang/String;)V" {
+			return m
+		}
+	}
+	return nil
 }
 
 func printClassInfo(cf *classReader.ClassFile) {
