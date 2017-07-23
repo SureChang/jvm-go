@@ -19,6 +19,14 @@ func newFields(class *Class, cfFields []*classReader.MemberInfo) []*Field {
 	return fields
 }
 
+func (self *Field) ConstValueIndex() uint {
+	return self.constValueIndex
+}
+
+func (self *Field) SlotId() uint {
+	return self.slotId
+}
+
 func (self *Field) copyAttributes(cfField *classReader.MemberInfo) {
 	if valAttr := cfField.ConstantValueAttribute(); valAttr != nil {
 		self.constValueIndex = uint(valAttr.ConstantValueIndex())

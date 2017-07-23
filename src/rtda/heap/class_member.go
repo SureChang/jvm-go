@@ -53,3 +53,7 @@ func (self *ClassMember) IsFinal() bool {
 func (self *ClassMember) IsSynthetic() bool {
 	return 0 != self.accessFlags&ACC_SYNTHETIC
 }
+
+func (self *ClassMember) Descriptor() string {
+	return self.descriptor
+}
