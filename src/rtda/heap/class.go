@@ -7,7 +7,7 @@ type Class struct {
 	name string // thisClassName
 	superClassName string
 	interfaceNames []string
-	constantPool *classReader.ConstantPool
+	constantPool *ConstantPool
 	fields []*Field
 	methods []*Method
 	loader *ClassLoader
@@ -15,7 +15,7 @@ type Class struct {
 	interfaces []*Class
 	instanceSlotCount uint
 	staticSlotCount uint
-	staticVars *Slots
+	staticVars Slots
 }
 
 func newClass(cf *classReader.ClassFile) *Class {
@@ -32,4 +32,8 @@ func newClass(cf *classReader.ClassFile) *Class {
 
 func (self *Class) IsPublic() bool {
 	return 0 != self.accessFlags & ACC_PUBLIC
+}
+
+func (self *Class) isSubClassOf(class *Class) bool {
+	return self.superClassName == class.name
 }
