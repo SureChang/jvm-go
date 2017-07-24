@@ -1,23 +1,19 @@
 package interpreter
 
 import (
-	"classReader"
 	"rtda"
 	"fmt"
 	"instructions/base"
 	"instructions"
+	"rtda/heap"
 )
 
-func Interpret(methodInfo *classReader.MemberInfo) {
-	codeAttr := methodInfo.CodeAttribute()
-	maxLocals := codeAttr.MaxLocals()
-	maxStack := codeAttr.MaxStack()
-	bytecode := codeAttr.Code()
+func Interpret(method *heap.Method) {
 	thread := rtda.NewThread()
-	frame := thread.NewFrame(maxLocals, maxStack)
+	frame := thread.NewFrame(method)
 	thread.PushFrame(frame)
 	defer catchErr(frame)
-	loop(thread, bytecode)
+	loop(thread, method.Code())
 }
 
 func loop(thread *rtda.Thread, bytecode []byte) {

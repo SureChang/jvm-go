@@ -2,7 +2,6 @@ package instructions
 
 import (
 	"instructions/base"
-	"strings"
 	"instructions/constants"
 	"instructions/loads"
 	"instructions/stores"

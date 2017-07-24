@@ -1,5 +1,7 @@
 package rtda
 
+import "rtda/heap"
+
 type Thread struct {
 	pc int
 	stack *Stack
@@ -19,8 +21,8 @@ func (self *Thread) SetPC(pc int) {
 	self.pc = pc
 }
 
-func (self *Thread) NewFrame(maxLocals, maxStack uint) *Frame {
-	return newFrame(self, maxLocals, maxStack)
+func (self *Thread) NewFrame(method *heap.Method) *Frame {
+	return newFrame(self, method)
 }
 
 func (self *Thread) PushFrame(frame *Frame) {
