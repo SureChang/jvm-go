@@ -7,7 +7,6 @@ import (
 	"classpath"
 	"os"
 	"strings"
-	"interpreter"
 	"rtda/heap"
 )
 
@@ -50,7 +49,7 @@ func startJVM(cmd *Cmd) {
 	mainClass := classLoader.LoadClass(className)
 	mainMethod := mainClass.GetMainMethod()
 	if mainMethod != nil {
-		interpreter.Interpret(mainMethod)
+		interpret(mainMethod)
 	} else {
 		fmt.Printf("Main method not found in class %s\n", cmd.class)
 	}

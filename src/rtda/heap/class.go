@@ -1,6 +1,9 @@
 package heap
 
-import "classReader"
+import (
+	"classReader"
+	"strings"
+)
 
 type Class struct {
 	accessFlags uint16
@@ -34,6 +37,10 @@ func (self *Class) IsPublic() bool {
 	return 0 != self.accessFlags & ACC_PUBLIC
 }
 
+func (self *Class) IsSuper() bool {
+	return 0 != self.accessFlags&ACC_SUPER
+}
+
 func (self *Class) IsInterface() bool {
 	return 0 != self.accessFlags&ACC_INTERFACE
 }
@@ -41,9 +48,19 @@ func (self *Class) IsAbstract() bool {
 	return 0 != self.accessFlags&ACC_ABSTRACT
 }
 
+func (self *Class) SuperClass() *Class {
+	return self.superClass
+}
 
-func (self *Class) isSubClassOf(class *Class) bool {
-	return self.superClassName == class.name
+func (self *Class) GetPackageName() string {
+	if i := strings.LastIndex(self.name, "/"); i >= 0 {
+		return self.name[:i]
+	}
+	return ""
+}
+
+func (self *Class) Name() string {
+	return self.name
 }
 
 func (self *Class) ConstantPool() *ConstantPool {
