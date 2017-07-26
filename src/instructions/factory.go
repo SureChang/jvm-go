@@ -6,6 +6,10 @@ import (
 	"instructions/loads"
 	"instructions/stores"
 	"instructions/stack"
+	"instructions/references"
+	"instructions/control"
+	"instructions/math"
+	"fmt"
 )
 
 // NoOperandsInstruction singletons
@@ -152,7 +156,7 @@ var (
 	//freturn       = &FRETURN{}
 	//dreturn       = &DRETURN{}
 	//areturn       = &ARETURN{}
-	//_return       = &RETURN{}
+	_return       = &control.RETURN{}
 	//arraylength   = &ARRAY_LENGTH{}
 	//athrow        = &ATHROW{}
 	//monitorenter  = &MONITOR_ENTER{}
@@ -198,8 +202,8 @@ func NewInstruction(opcode byte) base.Instruction {
 	//	return &BIPUSH{}
 	//case 0x11:
 	//	return &SIPUSH{}
-	//case 0x12:
-	//	return &LDC{}
+	case 0x12:
+		return &constants.LDC{}
 	//case 0x13:
 	//	return &LDC_W{}
 	//case 0x14:
@@ -426,8 +430,8 @@ func NewInstruction(opcode byte) base.Instruction {
 	//	return ixor
 	//case 0x83:
 	//	return lxor
-	//case 0x84:
-	//	return &IINC{}
+	case 0x84:
+		return &math.IINC{}
 	//case 0x85:
 	//	return i2l
 	//case 0x86:
@@ -516,28 +520,28 @@ func NewInstruction(opcode byte) base.Instruction {
 	//	return dreturn
 	//case 0xb0:
 	//	return areturn
-	//case 0xb1:
-	//	return _return
-	//case 0xb2:
-	//	return &GET_STATIC{}
-	//case 0xb3:
-	//	return &PUT_STATIC{}
-	//case 0xb4:
-	//	return &GET_FIELD{}
-	//case 0xb5:
-	//	return &PUT_FIELD{}
-	//case 0xb6:
-	//	return &INVOKE_VIRTUAL{}
-	//case 0xb7:
-	//	return &INVOKE_SPECIAL{}
-	//case 0xb8:
-	//	return &INVOKE_STATIC{}
+	case 0xb1:
+		return _return
+	case 0xb2:
+		return &references.GET_STATIC{}
+	case 0xb3:
+		return &references.PUT_STATIC{}
+	case 0xb4:
+		return &references.GET_FIELD{}
+	case 0xb5:
+		return &references.PUT_FIELD{}
+	case 0xb6:
+		return &references.INVOKE_VIRTUAL{}
+	case 0xb7:
+		return &references.INVOKE_SPECIAL{}
+	case 0xb8:
+		return &references.INVOKE_STATIC{}
 	//case 0xb9:
 	//	return &INVOKE_INTERFACE{}
 	//case 0xba:
 	//	return &INVOKE_DYNAMIC{}
-	//case 0xbb:
-	//	return &NEW{}
+	case 0xbb:
+		return &references.NEW{}
 	//case 0xbc:
 	//	return &NEW_ARRAY{}
 	//case 0xbd:
@@ -572,6 +576,7 @@ func NewInstruction(opcode byte) base.Instruction {
 	//case 0xff:
 	//	return &BOOTSTRAP{} // impdep2
 	default:
+		fmt.Printf("BAD opcode:%x\n", opcode)
 		panic("BAD opcode: !")
 		return nil
 	}

@@ -6,13 +6,11 @@ import (
 	"rtda/heap"
 )
 
-// Set static field in class
-type PUT_STATIC struct{ base.Index16Instruction }
+// Get static field from class
+type GET_STATIC struct{ base.Index16Instruction }
 
-func (self *PUT_STATIC) Execute(frame *rtda.Frame) {
-	currentMethod := frame.Method()
-	currentClass := currentMethod.Class()
-	cp := currentClass.ConstantPool()
+func (self *GET_STATIC) Execute(frame *rtda.Frame) {
+	cp := frame.Method().Class().ConstantPool()
 	fieldRef := cp.GetConstant(self.Index).(*heap.FieldRef)
 	field := fieldRef.ResolvedField()
 	class := field.Class()
@@ -25,11 +23,6 @@ func (self *PUT_STATIC) Execute(frame *rtda.Frame) {
 	if !field.IsStatic() {
 		panic("java.lang.IncompatibleClassChangeError")
 	}
-	if field.IsFinal() {
-		if currentClass != class || currentMethod.Name() != "<clinit>" {
-			panic("java.lang.IllegalAccessError")
-		}
-	}
 
 	descriptor := field.Descriptor()
 	slotId := field.SlotId()
@@ -38,15 +31,15 @@ func (self *PUT_STATIC) Execute(frame *rtda.Frame) {
 
 	switch descriptor[0] {
 	case 'Z', 'B', 'C', 'S', 'I':
-		slots.SetInt(slotId, stack.PopInt())
+		stack.PushInt(slots.GetInt(slotId))
 	case 'F':
-		slots.SetFloat(slotId, stack.PopFloat())
+		stack.PushFloat(slots.GetFloat(slotId))
 	case 'J':
-		slots.SetLong(slotId, stack.PopLong())
+		stack.PushLong(slots.GetLong(slotId))
 	case 'D':
-		slots.SetDouble(slotId, stack.PopDouble())
+		stack.PushDouble(slots.GetDouble(slotId))
 	case 'L', '[':
-		slots.SetRef(slotId, stack.PopRef())
+		stack.PushRef(slots.GetRef(slotId))
 	default:
 		// todo
 	}
