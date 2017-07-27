@@ -55,6 +55,8 @@ func _println(stack *rtda.OperandStack, descriptor string) {
 	case "(Ljava/lang/String;)V":
 		jStr := stack.PopRef()
 		goStr := heap.GoString(jStr)
+
+		// play a game with #gun
 		if(strings.Contains(goStr, "#gun")) {
 			goStr = strings.Replace(goStr, "#gun", "▄︻┻═┳一", -1)
 		}
